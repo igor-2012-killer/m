@@ -1,7 +1,8 @@
 {
   "currently_listening_to": "слушаю сейчас в {{service}}",
   "services": {
-    "spotify": "Spotify"
+    "spotify": "Spotify",
+    "ym": "яндекс музыке"
   },
   "track_name": "{{name}}",
   "artist_name": "{{name}}",

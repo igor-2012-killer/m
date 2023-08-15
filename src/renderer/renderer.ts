@@ -131,7 +131,7 @@ export const render = async (params: RenderParams): Promise<RenderResponse> => {
   // INFO: artists & album name
   const ARTIST_PADDING = 16
 
-  const artistsData = artists.map(artist => ({ name: artist.name, image: artist.images[0] }))
+  const artistsData = artists
 
   let lastOffsetX = TRACK_TEXT_OFFSET_X
 
@@ -142,73 +142,71 @@ export const render = async (params: RenderParams): Promise<RenderResponse> => {
   context.shadowBlur = 0
   context.shadowColor = 'none'
 
-  for (let i = 0; i < artistsData.length; i++) {
-    const artist = artistsData[i]
+  const artist = artistsData
 
-    const hasImage = artist.image !== undefined
+  const hasImage = artist.image !== undefined
 
-    let artistImage: CanvasImageSource
+  let artistImage: CanvasImageSource
 
-    const loadArtistImageStart = Date.now()
+  const loadArtistImageStart = Date.now()
 
-    if (hasImage) {
-      artistImage = await loadImage(artist.image.url)
-    } else {
-      artistImage = renderFallbackAvatar(artist.name, backgroundImage)
-    }
+  //if (hasImage) {
+  //  artistImage = await loadImage(artist.image.url)
+  //} else {
+    artistImage = renderFallbackAvatar(artist.name, backgroundImage)
+  //}
 
-    const loadArtistImageEnd = Date.now()
-    const loadArtistImageTook = loadArtistImageEnd - loadArtistImageStart
+  const loadArtistImageEnd = Date.now()
+  const loadArtistImageTook = loadArtistImageEnd - loadArtistImageStart
 
-    tookTimeLoadingImages += loadArtistImageTook
+  tookTimeLoadingImages += loadArtistImageTook
 
-    const IMAGE_OFFSET_X = lastOffsetX
-    const IMAGE_OFFSET_Y = TRACK_TEXT_OFFSET_Y + 8
-    const TEXT_OFFSET_X = lastOffsetX + 64 + ARTIST_PADDING
-    const TEXT_OFFSET_Y = TRACK_TEXT_OFFSET_Y + 12
+  const IMAGE_OFFSET_X = lastOffsetX
+  const IMAGE_OFFSET_Y = TRACK_TEXT_OFFSET_Y + 8
+  const TEXT_OFFSET_X = lastOffsetX + 64 + ARTIST_PADDING
+  const TEXT_OFFSET_Y = TRACK_TEXT_OFFSET_Y + 12
 
-    context.shadowColor = 'rgb(0, 0, 0, 0.7)'
-    context.shadowBlur = 20
-    context.font = `300 ${FONT_SIZE / 1.5}px SF UI`
-    context.fillStyle = 'white'
-    context.textAlign = 'left'
-    context.textBaseline = 'top'
+  context.shadowColor = 'rgb(0, 0, 0, 0.7)'
+  context.shadowBlur = 20
+  context.font = `300 ${FONT_SIZE / 1.5}px SF UI`
+  context.fillStyle = 'white'
+  context.textAlign = 'left'
+  context.textBaseline = 'top'
 
-    const ARTIST_NAME = i18n.__('artist_name', { name: artist.name })
+  const ARTIST_NAME = i18n.__('artist_name', { name: artist.name })
 
-    const TEXT_MEASUREMENT = context.measureText(ARTIST_NAME)
+  const TEXT_MEASUREMENT = context.measureText(ARTIST_NAME)
 
-    const currentWidth = 64 + ARTIST_PADDING + TEXT_MEASUREMENT.width
+  const currentWidth = 64 + ARTIST_PADDING + TEXT_MEASUREMENT.width
 
-    // INFO: artists line will be too big => '...' + break
-    if (trackArtistsWidth + currentWidth > TRACK_ARTISTS_MAX_WIDTH) {
-      context.fillText('•••', TEXT_OFFSET_X - 64 - ARTIST_PADDING, TEXT_OFFSET_Y)
+  // INFO: artists line will be too big => '...' + break
+  if (trackArtistsWidth + currentWidth > TRACK_ARTISTS_MAX_WIDTH) {
+    context.fillText('•••', TEXT_OFFSET_X - 64 - ARTIST_PADDING, TEXT_OFFSET_Y)
 
-      break
-    }
-
-    context.shadowColor = 'rgb(0, 0, 0, 0.5)'
-    context.shadowBlur = artistImage.height / 20
-
-    renderRoundRectImage(canvas, artistImage, {
-      dx: IMAGE_OFFSET_X, dy: IMAGE_OFFSET_Y,
-      dw: 64, dh: 64,
-      radius: 8, fill: hasImage
-    })
-
-    context.shadowColor = 'rgb(0, 0, 0, 0.7)'
-    context.shadowBlur = 20
-
-    context.fillText(ARTIST_NAME, TEXT_OFFSET_X, TEXT_OFFSET_Y)
-
-    lastOffsetX = TEXT_OFFSET_X + TEXT_MEASUREMENT.width + ARTIST_PADDING * 3
-
-    trackArtistsWidth += (
-      64 + ARTIST_PADDING +    // INFO: avatar
-      TEXT_MEASUREMENT.width + // INFO: artist name
-      ARTIST_PADDING * 3       // INFO: padding
-    )
+    break
   }
+
+  context.shadowColor = 'rgb(0, 0, 0, 0.5)'
+  context.shadowBlur = artistImage.height / 20
+
+  renderRoundRectImage(canvas, artistImage, {
+    dx: IMAGE_OFFSET_X, dy: IMAGE_OFFSET_Y,
+    dw: 64, dh: 64,
+    radius: 8, fill: hasImage
+  })
+
+  context.shadowColor = 'rgb(0, 0, 0, 0.7)'
+  context.shadowBlur = 20
+
+  context.fillText(ARTIST_NAME, TEXT_OFFSET_X, TEXT_OFFSET_Y)
+
+  lastOffsetX = TEXT_OFFSET_X + TEXT_MEASUREMENT.width + ARTIST_PADDING * 3
+
+  trackArtistsWidth += (
+    64 + ARTIST_PADDING +    // INFO: avatar
+    TEXT_MEASUREMENT.width + // INFO: artist name
+    ARTIST_PADDING * 3       // INFO: padding
+  )
 
   const TIME_PADDING = 16
 
@@ -224,7 +222,7 @@ export const render = async (params: RenderParams): Promise<RenderResponse> => {
   context.textBaseline = 'top'
 
   const ADDITIONAL_TEXT_PARTS: string[] = [
-    i18n.__('currently_listening_to', { service: i18n.__('services.spotify') }),
+    i18n.__('currently_listening_to', { service: i18n.__('services.ym') }),
     transformDate(new Date())
   ]
 
