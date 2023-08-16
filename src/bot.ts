@@ -30,45 +30,45 @@ const run = async () => {
 
   // INFO: parse scrobbles only if we have lastfm account info
 
-  const lastfm = new Lastfm({
-    key: LASTFM_API_KEY
-  })
+  if (LASTFM_API_KEY) {
+    const lastfm = new Lastfm({
+      key: LASTFM_API_KEY
+    })
+    
 
-  const currentScrobblingTrackData = await lastfm.call<RecentTracks>('user.getRecentTracks', {
-    user: LASTFM_USERNAME,
-    limit: 1
-  })
+    const currentScrobblingTrackData = await lastfm.call<RecentTracks>('user.getRecentTracks', {
+      user: LASTFM_USERNAME,
+      limit: 1
+    })
 
-  const currentScrobblingTrack = currentScrobblingTrackData.recenttracks.track[0]
+    const currentScrobblingTrack = currentScrobblingTrackData.recenttracks.track[0]
 
-  const scrobblesData = await lastfm.call<TrackInfo>('track.getInfo', {
-    artist: currentScrobblingTrack.artist['#text'],
-    track: currentScrobblingTrack.name,
-    username: LASTFM_USERNAME
-  })
+    const scrobblesData = await lastfm.call<TrackInfo>('track.getInfo', {
+      artist: currentScrobblingTrack.artist['#text'],
+      track: currentScrobblingTrack.name,
+      username: LASTFM_USERNAME
+    })
 
-  scrobbles = Number.parseInt(scrobblesData.track?.userplaycount) ?? 0
+    scrobbles = Number.parseInt(scrobblesData.track?.userplaycount) ?? 0
 
+    const { buffer, renderTime } = await render({
+      width: WIDTH,
+      height: HEIGHT,
+      scrobbles,
 
-  const artistIds = item.artists.map(artist => artist.id).join(',')
-  const artistNames = item.artists.map(artist => artist.name).join(', ')
+      imageUrl: currentScrobblingTrackData.recenttracks.track[0].image[3]['#text'],
+      progress: 123,
 
-  const { buffer, renderTime } = await render({
-    width: WIDTH,
-    height: HEIGHT,
-    scrobbles,
+      trackName: scrobblesData.track.name,
+      trackDuration: Number(scrobblesData.track?.duration),
 
-    imageUrl: currentScrobblingTrackData.recenttracks.track[0].image[3]['#text'],
-    progress: 123,
+      artists: currentScrobblingTrack.artist['#text'] // artists? artists!
+    })
 
-    trackName: scrobblesData.track,
-    trackDuration: scrobblesData.track?.duration,
+    debug_renderer(renderTime)
 
-    artists: scrobblesData.artist // artists? artists!
-  })
-
-  debug_renderer(renderTime)
-
-  return uploadCover(buffer)
+    return uploadCover(buffer)
+  }
 }
-setInterval(run, 60000).catch(console.error)
+
+setInterval(run, 60000)

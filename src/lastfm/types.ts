@@ -4,6 +4,7 @@ export interface Artist {
 }
 
 export interface Track {
+  image: any
   artist: Artist
   name: string
   url: string
@@ -29,6 +30,7 @@ export interface TrackInfoTrack {
 }
 
 export interface TrackInfo {
+  artist: string
   track: TrackInfoTrack
   error?: number
 }

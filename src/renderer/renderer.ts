@@ -15,7 +15,7 @@ import {
   roundRect
 } from './utils'
 
-FontLibrary.use('SF UI', resolve(__dirname, '..', '..', 'fonts', 'SF UI', '*.otf'))
+FontLibrary.use('SF UI', "C:/Users/x/asd/m/fonts/SF UI/SFUIText-BoldItalic.ttf")
 
 const LOCALE = env.get('LOCALE').required().example('ru').asString()
 
@@ -46,7 +46,7 @@ export interface RenderParams {
   trackName: string
   trackDuration: number
 
-  artists: SimpleArtist[]
+  artists: string
 }
 
 export interface RenderResponseRenderTime {
@@ -103,7 +103,7 @@ export const render = async (params: RenderParams): Promise<RenderResponse> => {
 
   let TRACK_TEXT = i18n.__('track_name', { name: trackName })
 
-  const FONT_SIZE = 24 * widthMultiplier
+  const FONT_SIZE = 10 * widthMultiplier
 
   context.shadowColor = 'rgb(0, 0, 0, 0.6)'
   context.shadowBlur = 24
@@ -144,7 +144,7 @@ export const render = async (params: RenderParams): Promise<RenderResponse> => {
 
   const artist = artistsData
 
-  const hasImage = artist.image !== undefined
+  const hasImage = false
 
   let artistImage: CanvasImageSource
 
@@ -153,7 +153,7 @@ export const render = async (params: RenderParams): Promise<RenderResponse> => {
   //if (hasImage) {
   //  artistImage = await loadImage(artist.image.url)
   //} else {
-    artistImage = renderFallbackAvatar(artist.name, backgroundImage)
+    artistImage = renderFallbackAvatar(artist, backgroundImage)
   //}
 
   const loadArtistImageEnd = Date.now()
@@ -173,7 +173,7 @@ export const render = async (params: RenderParams): Promise<RenderResponse> => {
   context.textAlign = 'left'
   context.textBaseline = 'top'
 
-  const ARTIST_NAME = i18n.__('artist_name', { name: artist.name })
+  const ARTIST_NAME = i18n.__('artist_name', { name: artist })
 
   const TEXT_MEASUREMENT = context.measureText(ARTIST_NAME)
 
@@ -182,8 +182,6 @@ export const render = async (params: RenderParams): Promise<RenderResponse> => {
   // INFO: artists line will be too big => '...' + break
   if (trackArtistsWidth + currentWidth > TRACK_ARTISTS_MAX_WIDTH) {
     context.fillText('•••', TEXT_OFFSET_X - 64 - ARTIST_PADDING, TEXT_OFFSET_Y)
-
-    break
   }
 
   context.shadowColor = 'rgb(0, 0, 0, 0.5)'
